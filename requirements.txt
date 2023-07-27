@@ -1,0 +1,4 @@
+psutil
+py-cord
+python-dotenv
+py-cpuinfo
