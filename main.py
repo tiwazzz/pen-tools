@@ -47,11 +47,11 @@ async def about_server(ctx):
         cpuAdsHz = ":warning: Unable to retrieve the clock speed of your CPU because some libraries are not supported"
         cpuActHz = ":warning: Unable to retrieve the clock speed of your CPU because some libraries are not supported"
         print(f"[ er ] about_server slash command got some error\nError detail: {error}")
-    await ctx.respond(f">>> :identification_card: Processor: {cpuName}\n:brain: Amount of core: {cpuAmountCore}\n:brain: Architecture: {cpuArch}\n:zap: Maximum clock speed: {cpuAdsHz}\n:zap: Actual clock speed: {cpuActHz}")
+    await ctx.respond(f">>> **Specification on this server**\n:identification_card: Processor: CPU: {cpuName}, {cpuAdsHz}\n:brain: Amount of CPU core: {cpuAmountCore}")
 
 @bot.slash_command(description="About us!!!")
 async def about_us(ctx):
-    await ctx.respond("We're just com-sci student in Thailand :flag_th::computer:.\nThank you for using our project and comments for imporved our project too.\nAnd follow along with our project at GitHub this link: 'some link this here lol'")
+    await ctx.respond(">>> We're just com-sci student in Thailand :flag_th::computer:.\nThank you for using our project and comments for imporved our project too.\nAnd follow along with our project at GitHub this link: 'some link this here lol'")
 
 load_dotenv()
 bot.run(os.getenv("BOT_TOKEN"))
