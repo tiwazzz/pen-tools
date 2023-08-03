@@ -29,10 +29,7 @@ async def about_cpu(ctx):
     cpuThreadCore = psutil.cpu_count(logical=True)
     cpuAdsHz = functions.getAdsClockSpeed()
     cpuActHz = functions.getActsClockSpeed()
-    cpuL1cache = functions.getCpuL1()
-    cpuL2cache = functions.getCpuL2()
-    cpuL3cache = functions.getCpuL3()
-    await ctx.respond(f">>> **:information_source: Specification on CPU**\n:identification_card: Processor: {cpuName}, {cpuCore} cores/{cpuThreadCore} Threads\n:brain: Architecture: {cpuArch}\n:zap: Maximum clock speed: {cpuAdsHz}\n:zap: Actual clock speed: {cpuActHz}\n:inbox_tray: L1 Cache: {cpuL1cache}\n:inbox_tray: L2 Cache: {cpuL2cache}\n:inbox_tray: L3 Cache: {cpuL3cache}\n")
+    await ctx.respond(f">>> **:information_source: Specification on CPU**\n:identification_card: Processor: {cpuName}, {cpuCore} cores/{cpuThreadCore} Threads\n:brain: Architecture: {cpuArch}\n:zap: Maximum clock speed: {cpuAdsHz}\n:zap: Actual clock speed: {cpuActHz}")
 
 @bot.slash_command(description="Show about basic server's specification.")
 async def about_server(ctx):
@@ -40,9 +37,10 @@ async def about_server(ctx):
     cpuAmountCore = aboutCpuInfo['count']
     cpuAdsHz = functions.getAdsClockSpeed()
     ramTotal = functions.getRamTotal()
-    diskUsage = "empty"
-    diskTotal = "empty"
-    await ctx.respond(f">>> **:information_source: Specification on this server**\n:identification_card: Processor: {cpuName}, :brain: {cpuAmountCore} core x {cpuAdsHz} GHz\n:pencil: RAM: {ramTotal} GB\n:floppy_disk: Disk: {diskUsage}/{diskTotal} GB")
+    diskUsage = functions.byteToGb(psutil.disk_usage("/").used)
+    diskTotal = functions.byteToGb(psutil.disk_usage("/").total)
+    diskSpacePercent = psutil.disk_usage("/").percent
+    await ctx.respond(f">>> **:information_source: Specification on this server**\n:identification_card: Processor: {cpuName}, :brain: {cpuAmountCore} core x {cpuAdsHz} GHz\n:pencil: RAM: {ramTotal} GB\n:floppy_disk: Disk: {diskUsage}/{diskTotal} GB, {diskSpacePercent} %")
 
 @bot.slash_command(description="Thank you to using our project.")
 async def thank_you(ctx):
