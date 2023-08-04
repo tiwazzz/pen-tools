@@ -1,5 +1,3 @@
-import platform
-import cpuinfo
 import psutil
 
 def byteToGb(getByte):
@@ -11,22 +9,6 @@ def byteToMb(getByte):
     covertedMb = int(getByte)
     covertedMb = round(covertedMb*(10**-8), 2)
     return covertedMb
-    
-def getActsClockSpeed():
-    try:
-        actHz = byteToGb(cpuinfo.get_cpu_info()['hz_actual'])
-    except Exception as error:
-        actHz = "**:octagonal_sign: libary not support**"
-        print(f"Error Message: {error}")
-    return actHz
-
-def getAdsClockSpeed():
-    try:
-        adsHz = byteToGb(cpuinfo.get_cpu_info()['hz_advertised'])
-    except Exception as error:
-        adsHz = "**:octagonal_sign: libary not support**"
-        print(f"Error Message: {error}")
-    return adsHz
 
 def getRamTotal():
     try:
@@ -43,5 +25,3 @@ def getRamSwap():
         swapRam = byteToGb(psutil.swap_memory().total)
         print(f"Error Message: {error}")
     return swapRam
-
-print(cpuinfo.get_cpu_info()['hz_advertised'])

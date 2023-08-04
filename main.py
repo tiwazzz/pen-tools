@@ -27,20 +27,35 @@ async def about_cpu(ctx):
     cpuArch = aboutCpuInfo['arch_string_raw']
     cpuCore = psutil.cpu_count(logical=False)
     cpuThreadCore = psutil.cpu_count(logical=True)
-    cpuAdsHz = functions.getAdsClockSpeed()
-    cpuActHz = functions.getActsClockSpeed()
+    try:
+        cpuAdsHz = aboutCpuInfo['hz_advertised_friendly']
+        cpuActHz = aboutCpuInfo['hz_actual_friendly']
+    except Exception as error:
+        cpuAdsHz = "**:octagonal_sign: libary not support**"
+        cpuActHz = "**:octagonal_sign: libary not support**"
+        print(f"Error Message: {error}")
     await ctx.respond(f">>> **:information_source: Specification on CPU**\n:identification_card: Processor: {cpuName}, {cpuCore} cores/{cpuThreadCore} Threads\n:brain: Architecture: {cpuArch}\n:zap: Maximum clock speed: {cpuAdsHz}\n:zap: Actual clock speed: {cpuActHz}")
 
 @bot.slash_command(description="Show about basic server's specification.")
 async def about_server(ctx):
     cpuName = aboutCpuInfo['brand_raw']
-    cpuAmountCore = aboutCpuInfo['count']
-    cpuAdsHz = functions.getAdsClockSpeed()
+    cpuCore = psutil.cpu_count(logical=False)
+    cpuThreadCore = psutil.cpu_count(logical=True)
     ramTotal = functions.getRamTotal()
     diskUsage = functions.byteToGb(psutil.disk_usage("/").used)
     diskTotal = functions.byteToGb(psutil.disk_usage("/").total)
     diskSpacePercent = psutil.disk_usage("/").percent
-    await ctx.respond(f">>> **:information_source: Specification on this server**\n:identification_card: Processor: {cpuName}, :brain: {cpuAmountCore} core x {cpuAdsHz} GHz\n:pencil: RAM: {ramTotal} GB\n:floppy_disk: Disk: {diskUsage}/{diskTotal} GB, {diskSpacePercent} %")
+    try:
+        cpuAdsHz = aboutCpuInfo['hz_advertised_friendly']
+    except Exception as error:
+        cpuAdsHz = "**:octagonal_sign: libary not support**"
+        print(f"Error Message: {error}")
+    await ctx.respond(f">>> **:information_source: Specification on this server**\n:identification_card: Processor: {cpuName}, :brain: {cpuCore} cores/{cpuThreadCore} Threads x {cpuAdsHz}\n:pencil: RAM: {ramTotal} GB\n:floppy_disk: Disk: {diskUsage}/{diskTotal} GB, {diskSpacePercent} %")
+
+@bot.slash_command(description="Show CPU status.")
+async def status_cpu(ctx):
+    
+    await ctx.response(f"")
 
 @bot.slash_command(description="Thank you to using our project.")
 async def thank_you(ctx):
