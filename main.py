@@ -1,4 +1,5 @@
 import os
+import platform
 import discord
 import cpuinfo
 import psutil
@@ -38,10 +39,11 @@ async def about_cpu(ctx):
 
 @bot.slash_command(description="Show about basic server's specification.")
 async def about_server(ctx):
+    hostname = platform.node()
     cpuName = aboutCpuInfo['brand_raw']
     cpuCore = psutil.cpu_count(logical=False)
     cpuThreadCore = psutil.cpu_count(logical=True)
-    ramTotal = functions.getRamTotal()
+    ramTotal = functions.byteToGb(psutil.virtual_memory().total)
     diskUsage = functions.byteToGb(psutil.disk_usage("/").used)
     diskTotal = functions.byteToGb(psutil.disk_usage("/").total)
     diskSpacePercent = psutil.disk_usage("/").percent
@@ -50,7 +52,7 @@ async def about_server(ctx):
     except Exception as error:
         cpuAdsHz = "**:octagonal_sign: libary not support**"
         print(f"Error Message: {error}")
-    await ctx.respond(f">>> **:information_source: Specification on this server**\n:identification_card: Processor: {cpuName}, :brain: {cpuCore} cores/{cpuThreadCore} Threads x {cpuAdsHz}\n:pencil: RAM: {ramTotal} GB\n:floppy_disk: Disk: {diskUsage}/{diskTotal} GB, {diskSpacePercent} %")
+    await ctx.respond(f">>> **:information_source: Specification on this server**\n:identification_card: Hostname: {hostname}\n:identification_card: Processor: {cpuName}, :brain: {cpuCore} cores/{cpuThreadCore} Threads x {cpuAdsHz}\n:pencil: RAM: {ramTotal} GB\n:floppy_disk: Disk: {diskUsage}/{diskTotal} GB, {diskSpacePercent} %")
 
 @bot.slash_command(description="Show CPU status.")
 async def status_cpu(ctx):
@@ -63,7 +65,7 @@ async def status_cpu(ctx):
     except Exception as error:
         cpuAdsHz = "**:octagonal_sign: libary not support**"
         print(f"Error Message: {error}")
-    await ctx.response(f">>> **:information_source: CPU status on this server**\n:identification_card: Processor: {cpuName}, :brain: {cpuCore} cores/{cpuThreadCore} Threads x {cpuAdsHz}\n:brain::bar_chart: CPU usaged: {cpuThreadUsage}")
+    await ctx.respond(f">>> **:information_source: CPU status on this server**\n:identification_card: Processor: {cpuName}, :brain: {cpuCore} cores/{cpuThreadCore} Threads x {cpuAdsHz}\n:brain::bar_chart: CPU usaged: {cpuThreadUsage}")
 
 @bot.slash_command(description="Thank you to using our project.")
 async def thank_you(ctx):
