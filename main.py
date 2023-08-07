@@ -54,12 +54,21 @@ async def about_server(ctx):
 
 @bot.slash_command(description="Show CPU status.")
 async def status_cpu(ctx):
-    
-    await ctx.response(f"")
+    cpuName = aboutCpuInfo['brand_raw']
+    cpuCore = psutil.cpu_count(logical=False)
+    cpuThreadCore = psutil.cpu_count(logical=True)
+    cpuThreadUsage = psutil.cpu_percent(percpu=True)
+    try:
+        cpuAdsHz = aboutCpuInfo['hz_advertised_friendly']
+    except Exception as error:
+        cpuAdsHz = "**:octagonal_sign: libary not support**"
+        print(f"Error Message: {error}")
+    await ctx.response(f">>> **:information_source: CPU status on this server**\n:identification_card: Processor: {cpuName}, :brain: {cpuCore} cores/{cpuThreadCore} Threads x {cpuAdsHz}\n:brain::bar_chart: CPU usaged: {cpuThreadUsage}")
 
 @bot.slash_command(description="Thank you to using our project.")
 async def thank_you(ctx):
     await ctx.respond(">>> We're com-sci students in Thailand :flag_th::computer:.\nThank you for using our project and comments for imporved our project too.\nAnd follow along with our project at GitHub this link: 'some link this here lol'")
 
 load_dotenv()
-bot.run(os.getenv("BOT_TOKEN"))
+token = os.getenv("BOT_TOKEN")
+bot.run(token)
