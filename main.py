@@ -2,7 +2,9 @@ import os
 import platform
 import discord
 import cpuinfo
+import ping3
 import psutil
+from discord.commands import Option
 from dotenv import load_dotenv
 
 # functions created by everyone (Thanks everyone!)
@@ -10,6 +12,11 @@ import functions
 
 # decare discord library
 bot = discord.Bot()
+
+# Example, get argument/input from user from discord!
+# @bot.slash_command(name='greet', description='Greet someone!')
+# async def greet(ctx, name: Option(str, "Enter your friend's name", required = False, default = '')):
+#     await ctx.respond(f'Hello {name}!')
 
 # Showing on command-prompt
 print("[ in ] Welcome to pen-tools project.")
@@ -32,8 +39,8 @@ async def about_cpu(ctx):
         cpuAdsHz = aboutCpuInfo['hz_advertised_friendly']
         cpuActHz = aboutCpuInfo['hz_actual_friendly']
     except Exception as error:
-        cpuAdsHz = "**:octagonal_sign: libary not support**"
-        cpuActHz = "**:octagonal_sign: libary not support**"
+        cpuAdsHz = "**:boom: libary not support**"
+        cpuActHz = "**:boom: libary not support**"
         print(f"Error Message: {error}")
     await ctx.respond(f">>> **:information_source: Specification on CPU**\n:identification_card: Processor: {cpuName}, {cpuCore} cores/{cpuThreadCore} Threads\n:brain: Architecture: {cpuArch}\n:zap: Maximum clock speed: {cpuAdsHz}\n:zap: Actual clock speed: {cpuActHz}")
 
@@ -50,7 +57,7 @@ async def about_server(ctx):
     try:
         cpuAdsHz = aboutCpuInfo['hz_advertised_friendly']
     except Exception as error:
-        cpuAdsHz = "**:octagonal_sign: libary not support**"
+        cpuAdsHz = "**:boom: libary not support**"
         print(f"Error Message: {error}")
     await ctx.respond(f">>> **:information_source: Specification on this server**\n:identification_card: Hostname: {hostname}\n:identification_card: Processor: {cpuName}, :brain: {cpuCore} cores/{cpuThreadCore} Threads x {cpuAdsHz}\n:pencil: RAM: {ramTotal} GB\n:floppy_disk: Disk: {diskUsage}/{diskTotal} GB, {diskSpacePercent} %")
 
@@ -63,12 +70,34 @@ async def status_cpu(ctx):
     try:
         cpuAdsHz = aboutCpuInfo['hz_advertised_friendly']
     except Exception as error:
-        cpuAdsHz = "**:octagonal_sign: libary not support**"
+        cpuAdsHz = "**:boom: libary not support**"
         print(f"Error Message: {error}")
     await ctx.respond(f">>> **:information_source: CPU status on this server**\n:identification_card: Processor: {cpuName}, :brain: {cpuCore} cores/{cpuThreadCore} Threads x {cpuAdsHz}\n:brain::bar_chart: CPU usaged: {cpuThreadUsage}")
 
+@bot.slash_command(description="Show RAM used on this server.")
+async def staus_ram(ctx):
+    ramTotal = functions.byteToGb(psutil.virtual_memory().total)
+    ramUsed = functions.byteToGb(psutil.virtual_memory().used)
+    ramFree = functions.byteToGb(psutil.virtual_memory().free)
+    ramUsedPercentage = psutil.virtual_memory().percent
+    await ctx.respond(f">>> **:information_source: RAM used on this server**\n:pencil: RAM total: {ramTotal} GB\n:pencil: RAM status: {ramUsed} GB/ {ramTotal} GB, {ramUsedPercentage}%\n:pencil:RAM free space: {ramFree} GB")
+
+@bot.slash_command(description="Show network interfaces.")
+async def about_inet(ctx):
+    inetInfo = psutil.net_if_addrs()
+    print(inetInfo.keys())
+    await ctx.respond(f">>> **:information_source: Network interface on this server**\nInterfaces: {inetInfo.keys()}")
+
+@bot.slash_command(ip_destination="", description="Check network on this server")
+async def ping(ctx, ip_destination: Option(str, "Please enter your IP destination (default: 1.1.1.1): ", required = False, default = '1.1.1.1')):
+    try:
+        pingRes = ping3.ping()
+    except Exception as error:
+        pingRes = f"Connection had problem: {error}"
+    await ctx.respond(f">>> **:information_source: Result from {ip_destination}**\n")
+
 @bot.slash_command(description="Thank you to using our project.")
-async def thank_you(ctx):
+async def about_bot(ctx):
     await ctx.respond(">>> We're com-sci students in Thailand :flag_th::computer:.\nThank you for using our project and comments for imporved our project too.\nAnd follow along with our project at GitHub this link: 'some link this here lol'")
 
 load_dotenv()
