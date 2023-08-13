@@ -88,13 +88,15 @@ async def about_inet(ctx):
     print(inetInfo.keys())
     await ctx.respond(f">>> **:information_source: Network interface on this server**\nInterfaces: {inetInfo.keys()}")
 
-@bot.slash_command(ip_destination="", description="Check network on this server")
-async def ping(ctx, ip_destination: Option(str, "Please enter your IP destination (default: 1.1.1.1): ", required = False, default = '1.1.1.1')):
+@bot.slash_command(ip_des="", description="Check network or host destination on this server")
+async def ping(ctx, ip_des: Option(str, "Please enter your IP destination (default: 1.1.1.1): ", required = False, default = '1.1.1.1')):
     try:
-        pingRes = ping3.ping()
+        pingRes = ping3.verbose_ping(ip_des, count=5)
+        if pingRes == None:
+            pingRes = f":white_check_mark: Connection normally at {ip_des}."
     except Exception as error:
-        pingRes = f"Connection had problem: {error}"
-    await ctx.respond(f">>> **:information_source: Result from {ip_destination}**\n")
+        pingRes = f":boom: Connection had problem: {error}."
+    await ctx.respond(f">>> **:information_source: Result from {ip_des}**\n:pencil:: {pingRes}")
 
 @bot.slash_command(description="Thank you to using our project.")
 async def about_bot(ctx):
