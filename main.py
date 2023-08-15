@@ -13,11 +13,6 @@ import functions
 # decare discord library
 bot = discord.Bot()
 
-# Example, get argument/input from user from discord!
-# @bot.slash_command(name='greet', description='Greet someone!')
-# async def greet(ctx, name: Option(str, "Enter your friend's name", required = False, default = '')):
-#     await ctx.respond(f'Hello {name}!')
-
 # Showing on command-prompt
 print("[ in ] Welcome to pen-tools project.")
 
@@ -29,6 +24,7 @@ aboutCpuInfo = cpuinfo.get_cpu_info()
 async def on_ready():
     print(f"[ ok ] pen-tools project is running as {bot.user}")
 
+# Specification
 @bot.slash_command(description="Show about server's cpu specification.")
 async def about_cpu(ctx):
     cpuName = aboutCpuInfo['brand_raw']
@@ -61,6 +57,7 @@ async def about_server(ctx):
         print(f"Error Message: {error}")
     await ctx.respond(f">>> **:information_source: Specification on this server**\n:identification_card: Hostname: {hostname}\n:identification_card: Processor: {cpuName}, :brain: {cpuCore} cores/{cpuThreadCore} Threads x {cpuAdsHz}\n:pencil: RAM: {ramTotal} GB\n:floppy_disk: Disk: {diskUsage}/{diskTotal} GB, {diskSpacePercent} %")
 
+# Status
 @bot.slash_command(description="Show CPU status.")
 async def status_cpu(ctx):
     cpuName = aboutCpuInfo['brand_raw']
@@ -82,6 +79,7 @@ async def staus_ram(ctx):
     ramUsedPercentage = psutil.virtual_memory().percent
     await ctx.respond(f">>> **:information_source: RAM used on this server**\n:pencil: RAM total: {ramTotal} GB\n:pencil: RAM status: {ramUsed} GB/ {ramTotal} GB, {ramUsedPercentage}%\n:pencil:RAM free space: {ramFree} GB")
 
+# Networking
 @bot.slash_command(description="Show network interfaces.")
 async def about_inet(ctx):
     inetInfo = psutil.net_if_addrs()
