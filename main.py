@@ -1,5 +1,6 @@
 import os
 import platform
+import time
 import discord
 import cpuinfo
 import ping3
@@ -19,10 +20,18 @@ print("[ in ] Welcome to pen-tools project.")
 # Prepared Variable
 aboutCpuInfo = cpuinfo.get_cpu_info()
 
-# Discord slash commands
+# Event or something happend!
 @bot.event
 async def on_ready():
     print(f"[ ok ] pen-tools project is running as {bot.user}")
+
+@bot.event
+async def cpu_overload(ctx):
+    cpuThreadUsage = psutil.cpu_percent(percpu=True)
+    local_time = time.ctime(time.time())
+    while cpuThreadUsage >= 80.00:
+        print(f"[ wn ] CPU had been used 80 percents. CPU usage now : {cpuThreadUsage}% at {local_time}")
+        ctx.respond(f">>> **:warning: CPU HAD BEEN USED OVER 80 PERCENTS :chart_with_upwards_trend: !!!**")
 
 # Specification
 @bot.slash_command(description="Show about server's cpu specification.")
@@ -82,12 +91,20 @@ async def staus_ram(ctx):
 # Networking
 @bot.slash_command(description="Show network interfaces.")
 async def about_inet(ctx):
-    inetInfo = psutil.net_if_addrs()
-    print(inetInfo.keys())
+    try:
+        inetInfo = psutil.net_if_addrs()
+        print(inetInfo.keys())
+    except Exception as error:
+        inetInfo = "**:boom: libary not support**"
+        print(f"Error Message: {error}")
     await ctx.respond(f">>> **:information_source: Network interface on this server**\nInterfaces: {inetInfo.keys()}")
 
+@bot.slash_command(iphynet="", description="Show detail about network interface on your select.")
+async def detail_inet(ctx, iphynet: Option(str, "Please enter your interface example (en0): ", required = True, default = "")):
+    await ctx.respond(f">>> ")
+
 @bot.slash_command(ip_des="", description="Check network or host destination on this server")
-async def ping(ctx, ip_des: Option(str, "Please enter your IP destination (default: 1.1.1.1): ", required = False, default = '1.1.1.1')):
+async def ping(ctx, ip_des: Option(str, "Please enter your IP destination (default: 1.1.1.1): ", required = False, default = "1.1.1.1")):
     try:
         pingRes = ping3.verbose_ping(ip_des, count=5)
         if pingRes == None:
