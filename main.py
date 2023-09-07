@@ -6,6 +6,7 @@ import cpuinfo
 import ping3
 import psutil
 from discord.commands import Option
+from discord.ext import tasks
 from dotenv import load_dotenv
 
 # functions created by everyone (Thanks everyone!)
@@ -13,6 +14,9 @@ import functions
 
 # decare discord library
 bot = discord.Bot()
+
+# Channel 
+channelId = os.getenv('CHANNEL_ID')
 
 # Showing on command-prompt
 print("[ in ] Welcome to pen-tools project.")
@@ -25,13 +29,33 @@ aboutCpuInfo = cpuinfo.get_cpu_info()
 async def on_ready():
     print(f"[ ok ] pen-tools project is running as {bot.user}")
 
-@bot.event
-async def cpu_overload(ctx):
-    cpuThreadUsage = psutil.cpu_percent(percpu=True)
-    local_time = time.ctime(time.time())
-    while cpuThreadUsage >= 80.00:
-        print(f"[ wn ] CPU had been used 80 percents. CPU usage now : {cpuThreadUsage}% at {local_time}")
-        ctx.respond(f">>> **:warning: CPU HAD BEEN USED OVER 80 PERCENTS :chart_with_upwards_trend: !!!**")
+# Automate Task (using channel id only!)
+# Check Discord Ready?
+# Check CPU
+@tasks.loop(seconds=2, count=None)
+async def cpuChecker():
+    try:
+        cpuThreadUsage = psutil.cpu_percent(interval=1)
+        local_time = time.ctime(time.time())
+        if cpuThreadUsage >= 80.0:
+            print(f"[ wn ] CPU had been used 80 percents. CPU usage now : {cpuThreadUsage}% at {local_time}")
+            massage = f">>> **:warning: CPU HAD BEEN USED OVER 80 PERCENTS :chart_with_upwards_trend: !!!**"
+        await bot.get_channel(os.getenv('CHANNEL_ID')).send(massage)
+    except Exception as e:
+        print(f"Error cannot sent some message: {e}")
+        
+# @tasks.loop(seconds=2.0)
+# async def ramChecker():
+#     ramUsedPercentage = psutil.virtual_memory().percent
+#     local_time = time.ctime(time.time())
+#     if ramUsedPercentage >= 70.00:
+#         print(f"[ wn ] RAM had been used 70 percents. RAM usage now : {ramUsedPercentage}% at {local_time}")
+#     elif ramUsedPercentage >= 80.00:
+#         print(f"[ wn ] RAM had been used 80 percents. RAM usage now : {ramUsedPercentage}% at {local_time}")
+#         massage = f">>> **:warning: RAM HAD BEEN USED OVER 80 PERCENTS :chart_with_upwards_trend: !!!**"
+#     else:
+#         print(f"[ ok ] RAM is enough for hundle work load now. RAM usage now {ramUsedPercentage}% at {local_time}")
+#     await bot.get_channel(channelId).send(massage)
 
 # Specification
 @bot.slash_command(description="Show about server's cpu specification.")
