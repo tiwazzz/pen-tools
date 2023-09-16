@@ -40,10 +40,14 @@ async def cpuChecker():
         if cpuThreadUsage >= 80.0:
             print(f"[ wn ] CPU had been used 80 percents. CPU usage now : {cpuThreadUsage}% at {local_time}")
             massage = f">>> **:warning: CPU HAD BEEN USED OVER 80 PERCENTS :chart_with_upwards_trend: !!!**"
-        await bot.get_channel(os.getenv('CHANNEL_ID')).send(massage)
+        else:
+            print(f"[ ok ] CPU back to normally. CPU usage now : {cpuThreadUsage}% at {local_time}")
     except Exception as e:
         print(f"Error cannot sent some message: {e}")
-        
+
+@tasks.after_loop()
+async def afterCpuCheck():
+    pass
 # @tasks.loop(seconds=2.0)
 # async def ramChecker():
 #     ramUsedPercentage = psutil.virtual_memory().percent
@@ -143,4 +147,7 @@ async def about_bot(ctx):
 
 load_dotenv()
 token = os.getenv("BOT_TOKEN")
+
+# Start Services
+cpuChecker.start()
 bot.run(token)
