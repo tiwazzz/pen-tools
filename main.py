@@ -12,11 +12,13 @@ from dotenv import load_dotenv
 # functions created by everyone (Thanks everyone!)
 import functions
 
+# Load configuration file
+load_dotenv()
+token = os.getenv("BOT_TOKEN")
+channelId = os.getenv('CHANNEL_ID')
+
 # decare discord library
 bot = discord.Bot()
-
-# Channel 
-channelId = os.getenv('CHANNEL_ID')
 
 # Showing on command-prompt
 print("[ in ] Welcome to pen-tools project.")
@@ -45,8 +47,6 @@ async def afterCpuCheck():
     local_time = time.ctime(time.time())
     if cpuChecker >= 80.00:
         massage = f">>> **:warning:** CPU had using more 80 percents, Please check your server status now.\n**CPU Load:** {cpuChecker}%\n**Locate time:** {local_time}"
-    else:
-        pass
     await bot.get_channel(int(channelId)).send(massage)
 
 # @tasks.loop(seconds=2.0)
@@ -118,7 +118,7 @@ async def staus_ram(ctx):
     await ctx.respond(f">>> **:information_source: RAM used on this server**\n:pencil: RAM total: {ramTotal} GB\n:pencil: RAM status: {ramUsed} GB/ {ramTotal} GB, {ramUsedPercentage}%\n:pencil:RAM free space: {ramFree} GB")
 
 # Networking
-@bot.slash_command(description="Show network interfaces.")
+@bot.slash_command(description="Show network adapters.")
 async def about_inet(ctx):
     try:
         inetInfo = psutil.net_if_addrs()
@@ -130,7 +130,7 @@ async def about_inet(ctx):
 
 @bot.slash_command(iphynet="", description="Show detail about network interface on your select.")
 async def detail_inet(ctx, iphynet: Option(str, "Please enter your interface example (en0): ", required = True, default = "")):
-    await ctx.respond(f">>> ")
+    await ctx.respond(f">>> **:earth_americas: {iphynet} adapter detail**\n")
 
 @bot.slash_command(ip_des="", description="Check network or host destination on this server")
 async def ping(ctx, ip_des: Option(str, "Please enter your IP destination (default: 1.1.1.1): ", required = False, default = "1.1.1.1")):
@@ -145,9 +145,6 @@ async def ping(ctx, ip_des: Option(str, "Please enter your IP destination (defau
 @bot.slash_command(description="Thank you to using our project.")
 async def about_bot(ctx):
     await ctx.respond(">>> We're com-sci students in Thailand :flag_th::computer:.\nThank you for using our project and comments for imporved our project too.\nAnd follow along with our project at GitHub this link: 'some link this here lol'")
-
-load_dotenv()
-token = os.getenv("BOT_TOKEN")
 
 # Start Services
 cpuChecker.start()
