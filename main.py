@@ -25,6 +25,7 @@ print("[ in ] Welcome to pen-tools project.")
 
 # Prepared Variable
 aboutCpuInfo = cpuinfo.get_cpu_info()
+local_time = time.ctime(time.time())
 
 # Event or something happend!
 # Check Discord Ready?
@@ -38,29 +39,39 @@ async def on_ready():
 async def cpuChecker():
     try:
         cpuThreadUsage = psutil.cpu_percent(interval=1)
-    except Exception as e:
-        print(f"Error cannot sent some message: {e}")
+    except Exception as error:
+        print(f"[ er ] Cannot get infomation, Error: {error}")
     return cpuThreadUsage
 
 @cpuChecker.after_loop()
 async def afterCpuCheck():
-    local_time = time.ctime(time.time())
-    if cpuChecker >= 80.00:
-        massage = f">>> **:warning:** CPU had using more 80 percents, Please check your server status now.\n**CPU Load:** {cpuChecker}%\n**Locate time:** {local_time}"
-    await bot.get_channel(int(channelId)).send(massage)
+    try:
+        if cpuChecker >= 80.00:
+            message = f">>> **:warning:** CPU had using more 80 percents, Please check your server status now.\n**CPU Load:** {cpuChecker}%\n**Locate time:** {local_time}"
+    except Exception as error:
+        print(f"[ er ] Cannot sent message to Discord: {error}")
+    await bot.get_channel(int(channelId)).send(message)
 
-# @tasks.loop(seconds=2.0)
-# async def ramChecker():
-#     ramUsedPercentage = psutil.virtual_memory().percent
-#     local_time = time.ctime(time.time())
-#     if ramUsedPercentage >= 70.00:
-#         print(f"[ wn ] RAM had been used 70 percents. RAM usage now : {ramUsedPercentage}% at {local_time}")
-#     elif ramUsedPercentage >= 80.00:
-#         print(f"[ wn ] RAM had been used 80 percents. RAM usage now : {ramUsedPercentage}% at {local_time}")
-#         massage = f">>> **:warning: RAM HAD BEEN USED OVER 80 PERCENTS :chart_with_upwards_trend: !!!**"
-#     else:
-#         print(f"[ ok ] RAM is enough for hundle work load now. RAM usage now {ramUsedPercentage}% at {local_time}")
-#     await bot.get_channel(channelId).send(massage)
+@tasks.loop(seconds=2.0)
+async def ramChecker():
+    try:
+        ramUsedPercentage = psutil.virtual_memory().percent
+    except Exception as error:
+        print(f"[ er ] Cannot get infomation, Error: {error}")
+    return ramUsedPercentage
+@ramChecker.after_loop()
+async def afterRamCheck():
+    try:
+        if ramChecker() >= 70.00:
+            print(f"[ wn ] RAM had been used 70 percents. RAM usage now : {ramChecker()}% at {local_time}")
+        elif ramChecker() >= 80.00:
+            print(f"[ wn ] RAM had been used 80 percents. RAM usage now : {ramChecker()}% at {local_time}")
+            message = f">>> **:warning: RAM HAD BEEN USED OVER 80 PERCENTS :chart_with_upwards_trend: !!!**"
+        else:
+            print(f"[ ok ] RAM is enough for handle work load now. RAM usage now {ramChecker()}% at {local_time}")
+        await bot.get_channel(channelId).send(message)
+    except Exception as error:
+        print(f"[ er ] Cannot sent message to Discord, Error: {error}")
 
 # Specification
 @bot.slash_command(description="Show about server's cpu specification.")
@@ -144,7 +155,7 @@ async def ping(ctx, ip_des: Option(str, "Please enter your IP destination (defau
 
 @bot.slash_command(description="Thank you to using our project.")
 async def about_bot(ctx):
-    await ctx.respond(">>> We're com-sci students in Thailand :flag_th::computer:.\nThank you for using our project and comments for imporved our project too.\nAnd follow along with our project at GitHub this link: 'some link this here lol'")
+    await ctx.respond(">>> We're com-sci students in Thailand :flag_th::computer:.\nThank you for using our project and comments for imporved our project too.\nAnd follow along with our project at GitHub this link: 'https://github.com/tiwazzz/'")
 
 # Start Services
 cpuChecker.start()
