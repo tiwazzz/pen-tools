@@ -63,13 +63,13 @@ async def ramChecker():
 @ramChecker.after_loop
 async def afterRamCheck():
     try:
-        if ramChecker() >= 70.00:
-            print(f"[ wn ] RAM had been used 70 percents. RAM usage now : {ramChecker()}% at {local_time}")
-        elif ramChecker() >= 80.00:
-            print(f"[ wn ] RAM had been used 80 percents. RAM usage now : {ramChecker()}% at {local_time}")
+        if float(ramChecker) >= 70.00:
+            print(f"[ wn ] RAM had been used 70 percents. RAM usage now : {ramChecker}% at {local_time}")
+        elif float(ramChecker) >= 80.00:
+            print(f"[ wn ] RAM had been used 80 percents. RAM usage now : {ramChecker}% at {local_time}")
             message = f">>> **:warning: RAM HAD BEEN USED OVER 80 PERCENTS :chart_with_upwards_trend: !!!**"
         else:
-            print(f"[ ok ] RAM is enough for handle work load now. RAM usage now {ramChecker()}% at {local_time}")
+            print(f"[ ok ] RAM is enough for handle work load now. RAM usage now {ramChecker}% at {local_time}")
     except Exception as error:
         print(f"[ er ] Cannot sent message to Discord, Error: {error}")
     await bot.get_channel(channelId).send(message)
