@@ -35,7 +35,7 @@ async def on_ready():
 
 # Automate Task (using channel id only!)
 # Check CPU
-@tasks.loop(seconds=2)
+@tasks.loop(seconds=2.0)
 async def cpuChecker():
     try:
         cpuThreadUsage = psutil.cpu_percent(interval=1)
@@ -43,7 +43,7 @@ async def cpuChecker():
         print(f"[ er ] Cannot get infomation, Error: {error}")
     return cpuThreadUsage
 
-@cpuChecker.after_loop()
+@cpuChecker.after_loop
 async def afterCpuCheck():
     try:
         if cpuChecker >= 80.00:
@@ -59,7 +59,8 @@ async def ramChecker():
     except Exception as error:
         print(f"[ er ] Cannot get infomation, Error: {error}")
     return ramUsedPercentage
-@ramChecker.after_loop()
+
+@ramChecker.after_loop
 async def afterRamCheck():
     try:
         if ramChecker() >= 70.00:
@@ -69,9 +70,9 @@ async def afterRamCheck():
             message = f">>> **:warning: RAM HAD BEEN USED OVER 80 PERCENTS :chart_with_upwards_trend: !!!**"
         else:
             print(f"[ ok ] RAM is enough for handle work load now. RAM usage now {ramChecker()}% at {local_time}")
-        await bot.get_channel(channelId).send(message)
     except Exception as error:
         print(f"[ er ] Cannot sent message to Discord, Error: {error}")
+    await bot.get_channel(channelId).send(message)
 
 # Specification
 @bot.slash_command(description="Show about server's cpu specification.")

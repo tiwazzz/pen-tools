@@ -11,4 +11,4 @@ from dotenv import load_dotenv
 
 class DisCommands:
     def __init__(self) -> None:
-        
+        pass
