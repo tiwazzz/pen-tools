@@ -46,7 +46,7 @@ async def cpuChecker():
 @cpuChecker.after_loop
 async def afterCpuCheck():
     try:
-        if cpuChecker >= 80.00:
+        if float(cpuChecker) >= 80.00:
             message = f">>> **:warning:** CPU had using more 80 percents, Please check your server status now.\n**CPU Load:** {cpuChecker}%\n**Locate time:** {local_time}"
     except Exception as error:
         print(f"[ er ] Cannot sent message to Discord: {error}")
